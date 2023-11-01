@@ -1,7 +1,11 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml """
+  agent any
+  
+  stages {
+    stage('Run in Kubernetes') {
+      steps {
+        script {
+          def podDefinition = """
 apiVersion: v1
 kind: Pod
 metadata:
@@ -14,21 +18,24 @@ spec:
     - cat
     tty: true
 """
+          writeFile file: 'pod-definition.yaml', text: podDefinition
+          sh 'kubectl apply -f pod-definition.yaml'
+        }
+      }
     }
-  }
-  stages {
     stage('verify version') {
       steps {
-        container('jnlp') {
-          sh 'checkov --version'
-        }
+        sh 'kubectl exec checkov -- checkov --version'
       }
     }
     stage('check the help') {
       steps {
-        container('jnlp') {
-          sh 'checkov --help'
-        }
+        sh 'kubectl exec checkov -- checkov --help'
+      }
+    }
+    stage('Clean up') {
+      steps {
+        sh 'kubectl delete pod checkov'
       }
     }
   }
