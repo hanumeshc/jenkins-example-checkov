@@ -5,7 +5,7 @@ pipeline {
         stage('Verify Checkov Version') {
             steps {
                 script {
-                    docker.image('bridgecrew/checkov:sha256-2c2e15b6c4b7d60cf60cb35f909554c1801f6355933016eda4f664ea2d8fa175.att').inside {
+                    docker.image('bridgecrew/checkov:2.0.88').inside {
                         sh 'checkov --version'
                     }
                 }
@@ -15,7 +15,7 @@ pipeline {
         stage('Display Checkov Help') {
             steps {
                 script {
-                    docker.image('bridgecrew/checkov:sha256-2c2e15b6c4b7d60cf60cb35f909554c1801f6355933016eda4f664ea2d8fa175.att').inside {
+                    docker.image('bridgecrew/checkov:2.0.88').inside {
                         sh 'checkov --help'
                     }
                 }
