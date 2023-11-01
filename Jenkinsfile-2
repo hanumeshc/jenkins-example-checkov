@@ -1,21 +1,5 @@
-pipeline {
-    agent any
-    
-    stages {
-        stage('Show Checkov Version') {
-            steps {
-                script {
-                    sh 'checkov --version'
-                }
-            }
-        }
-        
-        stage('Show Checkov Help') {
-            steps {
-                script {
-                    sh 'checkov --help'
-                }
-            }
-        }
+agent {
+    docker {
+        image 'bridgecrew/checkov:3.0.15'
     }
 }
