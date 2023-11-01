@@ -1,7 +1,7 @@
 pipeline {
   agent {
-    none {
-      yaml '''
+    kubernetes {
+      yaml """
 apiVersion: v1
 kind: Pod
 metadata:
@@ -13,20 +13,20 @@ spec:
     command:
     - cat
     tty: true
-'''   
+"""
     }
   }
   stages {
     stage('verify version') {
       steps {
-        container('checkov') {
+        container('jnlp') {
           sh 'checkov --version'
         }
       }
     }
     stage('check the help') {
       steps {
-        container('checkov') {
+        container('jnlp') {
           sh 'checkov --help'
         }
       }
