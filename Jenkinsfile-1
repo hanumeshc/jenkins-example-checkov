@@ -9,9 +9,6 @@ spec:
     command:
     - cat
     tty: true
-'''   
-    }
-  }
   stages {
     stage('verify version') {
       steps {
