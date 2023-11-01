@@ -1,5 +1,25 @@
-agent {
-    docker {
-        image 'bridgecrew/checkov:3.0.15'
+pipeline {
+    agent any
+    
+    stages {
+        stage('Verify Checkov Version') {
+            steps {
+                script {
+                    docker.image('bridgecrew/checkov:latest').inside {
+                        sh 'checkov --version'
+                    }
+                }
+            }
+        }
+        
+        stage('Display Checkov Help') {
+            steps {
+                script {
+                    docker.image('bridgecrew/checkov:latest').inside {
+                        sh 'checkov --help'
+                    }
+                }
+            }
+        }
     }
 }
