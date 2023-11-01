@@ -1,7 +1,11 @@
 pipeline {
-  agent {
-    kubernetes {
-      yaml '''
+  agent any
+  
+  stages {
+    stage('Run in Kubernetes') {
+      steps {
+        script {
+          def podDefinition = """
 apiVersion: v1
 kind: Pod
 metadata:
@@ -9,26 +13,29 @@ metadata:
 spec:
   containers:
   - name: checkov
-    image: bridgecrew/checkov:2.0.888
+    image: bridgecrew/checkov:3.0.15
     command:
     - cat
     tty: true
-'''   
-    }
-  }
-  stages {
-    stage('verify version') {
-      steps {
-        container('checkov') {
-          sh 'checkov --version'
+"""
+          writeFile file: 'pod-definition.yaml', text: podDefinition
+          sh 'kubectl apply -f pod-definition.yaml'
         }
       }
     }
-    stage('analyze non-compliant') {
+    stage('verify version') {
       steps {
-        container('checkov') {
-          sh 'checkov -d non-compliant'
-        }
+        sh 'kubectl exec checkov -- checkov --version'
+      }
+    }
+    stage('check the help') {
+      steps {
+        sh 'kubectl exec checkov -- checkov --help'
+      }
+    }
+    stage('Clean up') {
+      steps {
+        sh 'kubectl delete pod checkov'
       }
     }
   }
