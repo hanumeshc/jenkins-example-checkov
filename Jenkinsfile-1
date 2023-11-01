@@ -1,3 +1,7 @@
+pipeline {
+  agent {
+    kubernetes {
+      yaml '''
 apiVersion: v1
 kind: Pod
 metadata:
@@ -5,10 +9,13 @@ metadata:
 spec:
   containers:
   - name: checkov
-    image: bridgecrew/checkov:2.0.888
+    image: bridgecrew/checkov:3.0.15
     command:
     - cat
     tty: true
+'''   
+    }
+  }
   stages {
     stage('verify version') {
       steps {
