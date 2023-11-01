@@ -1,42 +1,21 @@
 pipeline {
-  agent any
-  
-  stages {
-    stage('Run in Kubernetes') {
-      steps {
-        script {
-          def podDefinition = """
-apiVersion: v1
-kind: Pod
-metadata:
-  name: checkov
-spec:
-  containers:
-  - name: checkov
-    image: bridgecrew/checkov:3.0.15
-    command:
-    - cat
-    tty: true
-"""
-          writeFile file: 'pod-definition.yaml', text: podDefinition
-          sh 'kubectl apply -f pod-definition.yaml'
+    agent any
+    
+    stages {
+        stage('Show Checkov Version') {
+            steps {
+                script {
+                    sh 'checkov --version'
+                }
+            }
         }
-      }
+        
+        stage('Show Checkov Help') {
+            steps {
+                script {
+                    sh 'checkov --help'
+                }
+            }
+        }
     }
-    stage('verify version') {
-      steps {
-        sh 'kubectl exec checkov -- checkov --version'
-      }
-    }
-    stage('check the help') {
-      steps {
-        sh 'kubectl exec checkov -- checkov --help'
-      }
-    }
-    stage('Clean up') {
-      steps {
-        sh 'kubectl delete pod checkov'
-      }
-    }
-  }
 }
