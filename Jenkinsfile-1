@@ -1,7 +1,3 @@
-pipeline {
-  agent {
-    docker {
-      yaml '''
 apiVersion: v1
 kind: Pod
 metadata:
