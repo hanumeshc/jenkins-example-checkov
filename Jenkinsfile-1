@@ -25,12 +25,12 @@ spec:
     }
     stage('verify version') {
       steps {
-        sh 'checkov --version' // Example command, replace with your actual command
+        sh 'kubectl exec checkov -- checkov --version'
       }
     }
     stage('check the help') {
       steps {
-        sh 'checkov --help' // Example command, replace with your actual command
+        sh 'kubectl exec checkov -- checkov --help'
       }
     }
     stage('Clean up') {
